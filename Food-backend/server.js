@@ -5,13 +5,13 @@ require('dotenv').config();
 
 const connectDB = require('./config/database');
 const restaurantRoutes = require('./routes/restaurantRoutes');
-
+const dishRoutes = require('./routes/dishRoutes');
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-
+app.use('/api/dishes', dishRoutes);
 //Routes
 app.use('/api/restaurants', restaurantRoutes);
 

@@ -1,0 +1,129 @@
+
+<div class="menu-page">
+
+  <!-- Header -->
+  <header class="menu-header">
+
+    <a routerLink="/" class="back-link">
+      ← Back to restaurants
+    </a>
+
+    <div class="restaurant-hero">
+      <div class="restaurant-logo">
+        <img
+          *ngIf="restaurantImage() as image"
+          [src]="image"
+          [alt]="restaurantName()"
+        >
+        <i *ngIf="!restaurantImage()" class="bi bi-shop-window" aria-hidden="true"></i>
+      </div>
+
+      <div class="restaurant-details">
+        <span class="hero-eyebrow">DISCOVER OUR FOOD</span>
+        <h1>{{ restaurantName() }}</h1>
+        <p>Explore our delicious selection of dishes.</p>
+
+        <div class="restaurant-meta">
+          <span class="hero-chip cuisine-chip" *ngIf="restaurantCuisine() as cuisine">
+            <i class="bi bi-stars" aria-hidden="true"></i>
+            {{ cuisine }}
+          </span>
+
+          <span class="hero-chip" *ngIf="deliveryFee() !== null">
+            <i class="bi bi-bicycle" aria-hidden="true"></i>
+            Delivery <strong>{{ deliveryFee() }} DT</strong>
+          </span>
+
+          <span class="hero-chip dish-count" *ngIf="!loading() && !errorMessage()">
+            <i class="bi bi-egg-fried" aria-hidden="true"></i>
+            {{ dishes().length }} {{ dishes().length === 1 ? 'dish' : 'dishes' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+
+  <!-- Loading -->
+  <div class="message" *ngIf="loading()">
+    Loading menu...
+  </div>
+
+
+  <!-- Error -->
+  <div class="message error" *ngIf="!loading() && errorMessage()">
+    {{ errorMessage() }}
+  </div>
+
+
+  <!-- Empty menu -->
+  <div
+    class="message"
+    *ngIf="!loading() && !errorMessage() && dishes().length === 0">
+
+    No dishes available for this restaurant yet.
+
+  </div>
+
+
+  <!-- Dishes -->
+  <section
+    class="dishes-grid"
+    *ngIf="!loading() && !errorMessage() && dishes().length > 0">
+
+    <article class="dish-card" *ngFor="let dish of dishes()">
+
+      <div class="dish-image">
+
+        <img
+          [src]="dish.image || 'assets/default-food.png'"
+          [alt]="dish.nom"
+        >
+
+        <span
+          class="availability"
+          [class.unavailable]="!dish.disponible">
+
+          {{ dish.disponible ? 'AVAILABLE' : 'UNAVAILABLE' }}
+
+        </span>
+
+      </div>
+
+
+      <div class="dish-content">
+
+        <div class="dish-category">
+          {{ getCategory(dish) }}
+        </div>
+
+        <h2>{{ dish.nom }}</h2>
+
+        <p class="description">
+          {{ dish.description }}
+        </p>
+
+        <div class="dish-footer">
+
+          <span class="price">
+            {{ dish.prix }} DT
+          </span>
+
+          <span
+            class="status"
+            [class.unavailable-text]="!dish.disponible">
+
+            {{ dish.disponible ? 'Available' : 'Not available' }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+</div>
