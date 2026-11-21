@@ -1,0 +1,99 @@
+<div class="page-wrap">
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <div class="eyebrow">Curated for you</div>
+      <h1 class="fw-bold mb-1">Explore Restaurants</h1>
+      <p class="text-muted small">
+        Handpicked local favorites, from neighborhood gems to iconic tables.
+      </p>
+    </div>
+    <span class="pill">{{ filtered().length }} restaurants</span>
+  </div>
+
+  <div class="filter-bar">
+  <div class="search-box">
+    <i class="bi bi-search"></i>
+    <input
+      class="form-control"
+      placeholder="Search by restaurant name..."
+      (input)="search.set($any($event.target).value)"
+    />
+  </div>
+  <select
+    class="form-select w-auto border-0 bg-light"
+    (change)="cuisine.set($any($event.target).value)"
+  >
+    @for (c of cuisines(); track c) {
+      <option [value]="c">{{ c }}</option>
+    }
+  </select>
+  <div class="form-check form-switch pill mb-0 d-flex align-items-center gap-2">
+    <input
+      class="form-check-input ms-0"
+      type="checkbox"
+      id="openOnly"
+      (change)="openOnly.set($any($event.target).checked)"
+    />
+    <label for="openOnly" class="form-check-label small fw-semibold">Open now</label>
+  </div>
+  <select
+    class="form-select w-auto border-0 bg-light"
+    (change)="sort.set($any($event.target).value)"
+  >
+    <option value="az">A - Z</option>
+    <option value="fee">Lowest delivery</option>
+  </select>
+</div>
+
+  @if (loading()) {
+    <p class="text-muted text-center py-5">Loading restaurants...</p>
+  } @else if (error()) {
+    <p class="text-danger text-center py-5">
+      Could not load restaurants. Is the backend running?
+    </p>
+  } @else if (filtered().length === 0) {
+    <p class="text-muted text-center py-5">No restaurants found.</p>
+  }
+
+  <div class="cards-grid">
+    @for (r of filtered(); track r._id) {
+      <a [routerLink]="['/restaurants', r._id]" class="d-block h-100">
+        <div class="r-card">
+          <div class="r-img">
+            <div
+              class="r-img-bg"
+              [style.background-image]="r.image ? 'url(' + r.image + ')' : 'none'"
+            ></div>
+            @if (r.isOpen) {
+              <span class="badge-status open">● OPEN NOW</span>
+            } @else {
+              <span class="badge-status closed">● CLOSED</span>
+            }
+          </div>
+          <div class="p-3">
+            <div class="d-flex justify-content-between">
+              <span class="eyebrow">{{ r.typeCuisine }}</span>
+              <div class="text-end lh-1">
+                <strong class="small">{{ r.fraisLivraison.toFixed(1) }} DT</strong><br />
+                <small class="text-muted" style="font-size: 0.6rem">delivery</small>
+              </div>
+            </div>
+            <h5 class="fw-bold mt-1">{{ r.nom }}</h5>
+            <p class="text-muted small mb-2">{{ r.description }}</p>
+            <div class="text-muted small mb-2">
+              <i class="bi bi-geo-alt-fill icon-gold me-1"></i>{{ r.adresse }}
+            </div>
+            <div class="d-flex justify-content-between border-top pt-2 small">
+              <span class="text-muted">
+                <i class="bi bi-clock icon-gold me-1"></i>{{ r.horaires }}
+              </span>
+              <span class="fw-bold" style="color: var(--gold)">
+                View menu <i class="bi bi-arrow-right"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </a>
+    }
+  </div>
+</div>
